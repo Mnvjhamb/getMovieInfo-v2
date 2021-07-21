@@ -1,0 +1,22 @@
+<%- include('../layouts/header') %> <%- include('../layouts/navbar') %>
+<div class="container">
+  <div class="details">
+    <h1 class="display-1"><%= show.name %></h1>
+    <div class="div">
+      <img src="<%= show.image.original %> " alt="" />
+
+      <div class="detailsP">
+        <%- show.summary %>
+        <div style="color: #cb6ced">
+          Release Date: <%= show.premiered %> <br />
+          Genres: <%= show.genres %> <br />
+          Language: <%= show.language %> <br />
+          Ratings: <%= show.rating.average %> <br />
+          Type: <%= show.type %> <br />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%-include('../layouts/footer') %>
