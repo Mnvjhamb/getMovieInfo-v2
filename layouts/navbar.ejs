@@ -32,7 +32,7 @@
           <a class="nav-link active" aria-current="page" href="#shows">Shows</a>
         </li>
       </ul>
-      <form class="d-flex" action="/search">
+      <form class="d-flex mx-3" action="/search">
         <input
           id="input"
           type="text"
@@ -45,6 +45,12 @@
           Search
         </button>
       </form>
+      <% if(!currentUser){ %>
+      <a href="/login" class="btn mx-3 btn-primary">LogIn</a>
+      <a href="/register" class="btn btn-primary">Register</a>
+      <% } else{ %>
+      <a href="/logout" class="btn btn-secondary">Logout</a>
+      <% } %>
     </div>
   </div>
 </nav>
