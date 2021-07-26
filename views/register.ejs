@@ -1,0 +1,42 @@
+<%- include('../layouts/header') %> <%- include('../layouts/flash') %> <%-
+include('../layouts/navbar') %>
+<div style="margin-left: 30em; margin-top: 4em; margin-bottom: 5em">
+  <h1 class="display-3">Register</h1>
+  <div class="row">
+    <div class="col-6 mt-3">
+      <form action="/register" method="POST">
+        <input
+          required
+          class="form-control"
+          type="email"
+          id="email"
+          name="email"
+          autocomplete="off"
+          placeholder="email"
+        />
+        <br />
+        <input
+          required
+          class="form-control"
+          type="text"
+          id="username"
+          name="username"
+          autocomplete="off"
+          placeholder="username"
+        />
+        <br />
+        <input
+          required
+          class="form-control"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="password"
+        />
+        <br />
+        <button class="btn btn-primary">Register</button>
+      </form>
+    </div>
+  </div>
+</div>
+<%- include('../layouts/footer') %>
