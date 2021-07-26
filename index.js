@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const localStrategy = require("passport-local");
+const flash = require("connect-flash");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
@@ -44,6 +45,7 @@ app.use(
     },
   })
 );
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,6 +63,8 @@ passport.deserializeUser(function (id, done) {
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
 });
 
@@ -78,6 +82,7 @@ app.post("/register", async (req, res) => {
   await User.register(user, password);
   req.login(user, (err) => {
     if (!err) {
+      req.flash("success", "Account Created Successfully");
       res.redirect("/");
     }
   });
@@ -90,15 +95,19 @@ app.get("/login", (req, res) => {
 app.post(
   "/login",
   passport.authenticate("local", {
+    failureFlash: true,
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect("/");
+    const returnURL = req.session.returnTo || "/";
+    req.flash("success", "Welcome Back :)");
+    res.redirect(returnURL);
   }
 );
 
 app.get("/logout", (req, res) => {
   req.logout();
+  req.flash("success", "Logged You out");
   res.redirect("/");
 });
 
