@@ -9,6 +9,7 @@ const passport = require("passport");
 const session = require("express-session");
 const localStrategy = require("passport-local");
 const flash = require("connect-flash");
+const movies = require("./utils/movies");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
@@ -132,45 +133,46 @@ app.get(
   catchAsync(async (req, res) => {
     const { title } = req.query;
     if (title) {
-      try {
-        var shows = await axios.get(
-          `http://api.tvmaze.com/search/shows?q=${title}`
-        );
-        res.render("search", { shows: shows.data });
-      } catch (e) {
-        res.send(e);
-      }
+      var shows = await axios
+        .get(`https://www.omdbapi.com/?s=${title}&apikey=70fc15e9`)
+        .then((show) => {
+          res.render("search", { shows: show.data.Search });
+        })
+        .catch((e) => {
+          res.send(e);
+        });
     } else {
       res.send("NO MOVIES");
     }
   })
 );
 
-app.get(
-  "/:id",
-  catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    try {
-      const show = await axios.get(`http://api.tvmaze.com/episodes/${id}`);
-      res.render("Show", { show: show.data });
-    } catch (e) {
-      next(e);
-    }
-  })
-);
+// app.get(
+//   "/:id",
+//   catchAsync(async (req, res, next) => {
+//     const { id } = req.params;
+//     try {
+//       const show = await axios.get(`http://api.tvmaze.com/episodes/${id}`);
+//       res.render("Show", { show: show.data });
+//     } catch (e) {
+//       next(e);
+//     }
+//   })
+// );
 
 app.get(
-  "/search/:title",
+  "/:imdb",
   catchAsync(async (req, res) => {
-    const { title } = req.params;
-    try {
-      const show = await axios.get(
-        `http://api.tvmaze.com/singlesearch/shows?q=${title}`
-      );
-      res.render("searchedShow", { show: show.data });
-    } catch (e) {
-      res.send(e);
-    }
+    const { imdb } = req.params;
+    const show = await axios
+      .get(`https://www.omdbapi.com/?i=${imdb}&apikey=70fc15e9`)
+      .then((show) => {
+        console.log(show.data);
+        res.render("searchedShow", { show: show.data });
+      })
+      .catch((e) => {
+        res.send(e);
+      });
   })
 );
 

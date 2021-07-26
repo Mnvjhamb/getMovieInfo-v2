@@ -6,6 +6,7 @@ Movies = [
   "12 Angry Men",
   "Schindler's List",
   "Pulp Fiction",
+  "The Good, the Bad and the Ugly",
   "The Lord of the Rings: The Return of the King",
   "Fight Club",
   "The Lord of the Rings: The Fellowship of the Ring",
@@ -29,6 +30,7 @@ Movies = [
   "Interstellar",
   "Saving Private Ryan",
   "American History X",
+  "Spirited Away",
   "Casablanca",
   "Raiders of the Lost Ark",
   "Psycho",
@@ -190,6 +192,7 @@ Movies = [
   "Diabolique",
   "Sin City",
   "The Wizard of Oz",
+  "Gandhi",
   "Stalker",
   "The Bourne Ultimatum",
   "The Best Years of Our Lives",
@@ -206,6 +209,7 @@ Movies = [
   "Jaws",
   "The Battle of Algiers",
   "Groundhog Day",
+  "Memories of Murder",
   "Guardians of the Galaxy",
   "Monsters, Inc.",
   "Harry Potter and the Deathly Hallows: Part 2",
@@ -246,48 +250,5 @@ Movies = [
   "Paris, Texas",
   "Akira",
 ];
-$(document).ready(func());
-function func() {
-  images = document.getElementsByClassName("img");
-  movies = document.getElementsByClassName("movie");
-  i = 0;
-  getUrl = async () => {
-    id = Math.round(Math.random() * 247 + 1);
-    try {
-      await axios
-        .get(`https://www.omdbapi.com/?t=${Movies[id]}&apikey=70fc15e9`)
-        .then((data) => {
-          console.log(data);
-          images[i].src = data.data.Poster;
-          images[i].id = data.data.imdbID;
 
-          var name = document.createElement("h4");
-          name.innerHTML = data.data.Title;
-          name.style.color = "rgb(147 155 157)";
-          movies[i].id = `movie${data.data.imdbID}`;
-          movies[i].appendChild(name);
-        })
-        .catch(async (e) => {
-          console.log(e);
-          await getUrl();
-        });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  f = async () => {
-    for (j = 0; j < images.length; j++) {
-      await getUrl();
-      i += 1;
-    }
-  };
-  f();
-}
-
-// function reload() {
-//   window.location.reload();
-// }
-
-function movieDetails(id) {
-  window.location.href = "/" + id;
-}
+module.exports = Movies;

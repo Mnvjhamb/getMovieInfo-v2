@@ -2,18 +2,18 @@
 
 <div id="container">
   <div id="cont">
-    <% if(!shows.length){ %>
+    <% if(!shows){ %>
     <h1>No Such Shows/Movies</h1>
-    <% } else {%> <% for(var show of shows){ %> <% if(show.show.image){ %>
+    <% } else {%> <% for(var show of shows){ %> <% if(show.Poster){ %>
     <div class="searchedMovie">
       <img
-        onclick="searchedMovie(id)"
-        src="<%= show.show.image.original %>"
+        onclick="movieDetails(id)"
+        src="<%= show.Poster %>"
         alt=""
-        id="<%=show.show.name %>"
+        id="<%=show.imdbID %>"
         style="height: 300px; width: 300px"
       />
-      <h4 class="name mt-3"><%= show.show.name %></h4>
+      <h4 class="name mt-3"><%= show.Title %></h4>
     </div>
     <% } %> <% } %> <% } %>
   </div>

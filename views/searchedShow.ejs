@@ -133,18 +133,30 @@
 </style>
 <div class="container">
   <div class="details">
-    <h1 class="display-1"><%= show.name %></h1>
+    <h1 class="display-1"><%= show.Title %></h1>
     <div class="div">
-      <img src="<%= show.image.original %> " alt="" />
+      <img src="<%= show.Poster %> " alt="" />
 
       <div class="detailsP">
-        <%- show.summary %>
+        <%- show.Plot %>
         <div style="color: #cb6ced">
-          Release Date: <%= show.premiered %> <br />
-          Genres: <%= show.genres %> <br />
-          Language: <%= show.language %> <br />
-          Ratings: <%= show.rating.average %> <br />
-          Type: <%= show.type %> <br />
+          Cast: <span style="color: rgb(107, 98, 98)"><%= show.Actors %></span
+          ><br />
+          Writer: <span style="color: rgb(107, 98, 98)"><%= show.Writer %></span
+          ><br />
+          Release Date:
+          <span style="color: rgb(107, 98, 98)"><%= show.Released %></span>
+          <br />
+          Genres:
+          <span style="color: rgb(107, 98, 98)"><%= show.Genre %></span> <br />
+          Language:
+          <span style="color: rgb(107, 98, 98)"><%= show.Language %></span>
+          <br />
+          Ratings:
+          <span style="color: rgb(107, 98, 98)"><%= show.imdbRating %></span>
+          <br />
+          Type: <span style="color: rgb(107, 98, 98)"><%= show.Type %></span>
+          <br />
         </div>
       </div>
     </div>
