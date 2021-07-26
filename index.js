@@ -68,6 +68,20 @@ app.use((req, res, next) => {
   next();
 });
 
+const catchAsync = (func) => {
+  return function (req, res, next) {
+    func(req, res, next).catch(next);
+  };
+};
+
+class ExpressError extends Error {
+  constructor(message, status) {
+    super();
+    this.message = message;
+    this.status = status;
+  }
+}
+
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -76,17 +90,20 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-app.post("/register", async (req, res) => {
-  const { email, username, password } = req.body;
-  const user = await new User({ email, username });
-  await User.register(user, password);
-  req.login(user, (err) => {
-    if (!err) {
-      req.flash("success", "Account Created Successfully");
-      res.redirect("/");
-    }
-  });
-});
+app.post(
+  "/register",
+  catchAsync(async (req, res) => {
+    const { email, username, password } = req.body;
+    const user = await new User({ email, username });
+    await User.register(user, password);
+    req.login(user, (err) => {
+      if (!err) {
+        req.flash("success", "Account Created Successfully");
+        res.redirect("/");
+      }
+    });
+  })
+);
 
 app.get("/login", (req, res) => {
   res.render("login");
@@ -99,9 +116,8 @@ app.post(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    const returnURL = req.session.returnTo || "/";
     req.flash("success", "Welcome Back :)");
-    res.redirect(returnURL);
+    res.redirect("/");
   }
 );
 
@@ -111,42 +127,61 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/search", async (req, res) => {
-  const { title } = req.query;
-  if (title) {
+app.get(
+  "/search",
+  catchAsync(async (req, res) => {
+    const { title } = req.query;
+    if (title) {
+      try {
+        var shows = await axios.get(
+          `http://api.tvmaze.com/search/shows?q=${title}`
+        );
+        res.render("search", { shows: shows.data });
+      } catch (e) {
+        res.send(e);
+      }
+    } else {
+      res.send("NO MOVIES");
+    }
+  })
+);
+
+app.get(
+  "/:id",
+  catchAsync(async (req, res, next) => {
+    const { id } = req.params;
     try {
-      var shows = await axios.get(
-        `http://api.tvmaze.com/search/shows?q=${title}`
+      const show = await axios.get(`http://api.tvmaze.com/episodes/${id}`);
+      res.render("Show", { show: show.data });
+    } catch (e) {
+      next(e);
+    }
+  })
+);
+
+app.get(
+  "/search/:title",
+  catchAsync(async (req, res) => {
+    const { title } = req.params;
+    try {
+      const show = await axios.get(
+        `http://api.tvmaze.com/singlesearch/shows?q=${title}`
       );
-      res.render("search", { shows: shows.data });
+      res.render("searchedShow", { show: show.data });
     } catch (e) {
       res.send(e);
     }
-  } else {
-    res.send("NO MOVIES");
-  }
+  })
+);
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page not found", 404));
 });
 
-app.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const show = await axios.get(`http://api.tvmaze.com/episodes/${id}`);
-    res.render("Show", { show: show.data });
-  } catch (e) {
-    res.send(e);
-  }
-});
-
-app.get("/search/:title", async (req, res) => {
-  const { title } = req.params;
-  try {
-    const show = await axios.get(
-      `http://api.tvmaze.com/singlesearch/shows?q=${title}`
-    );
-    res.render("searchedShow", { show: show.data });
-  } catch (e) {
-    res.send(e);
-  }
+app.use((err, req, res, next) => {
+  const { status = 500, message = "SOMTHING WENT WRONg" } = err;
+  // console.log(err);
+  res.status(status).render("error", { message });
 });
 
 app.listen("3000", () => {
