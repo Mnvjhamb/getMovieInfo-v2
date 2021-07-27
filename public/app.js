@@ -284,10 +284,6 @@ function func() {
   f();
 }
 
-// function reload() {
-//   window.location.reload();
-// }
-
 function movieDetails(id) {
   window.location.href = "/" + id;
 }
