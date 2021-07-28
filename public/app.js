@@ -70,7 +70,6 @@ Movies = [
   "M",
   "Star Wars: Episode VI - Return of the Jedi",
   "Once Upon a Time in America",
-  "Amélie",
   "Witness for the Prosecution",
   "Reservoir Dogs",
   "Braveheart",
@@ -252,12 +251,11 @@ function func() {
   movies = document.getElementsByClassName("movie");
   i = 0;
   getUrl = async () => {
-    id = Math.round(Math.random() * 247 + 1);
+    id = Math.round(Math.random() * 243 + 1);
     try {
       await axios
         .get(`https://www.omdbapi.com/?t=${Movies[id]}&apikey=70fc15e9`)
         .then((data) => {
-          console.log(data);
           images[i].src = data.data.Poster;
           images[i].id = data.data.imdbID;
 

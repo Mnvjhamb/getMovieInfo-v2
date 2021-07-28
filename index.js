@@ -35,6 +35,17 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);
 
+const reviewSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
+  imdbId: String,
+  body: "String",
+});
+
+const Review = mongoose.model("Review", reviewSchema);
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -174,17 +185,36 @@ app.get(
       }
     }
 
+    const reviews = await Review.find({ imdbId: imdb }).populate("user");
     const show = await axios
       .get(`https://www.omdbapi.com/?i=${imdb}&apikey=70fc15e9`)
       .then((show) => {
-        console.log(show.data);
-        res.render("show", { show: show.data, notInWatchList });
+        res.render("show", { show: show.data, notInWatchList, reviews });
       })
       .catch((e) => {
         res.send(e);
       });
   })
 );
+
+app.post("/:imdbId/review", isLoggedIn, async (req, res) => {
+  const { imdbId } = req.params;
+  const { body } = req.body;
+  const review = await new Review({
+    user: req.user,
+    body,
+    imdbId,
+  });
+  await review.save();
+  req.flash("success", "Comment Added");
+  res.redirect("/" + imdbId);
+});
+
+app.get("/:imdbId/review/:reviewId/delete", isLoggedIn, async (req, res) => {
+  await Review.findByIdAndDelete(req.params.reviewId);
+  req.flash("success", "Comment Deleted");
+  res.redirect("/" + req.params.imdbId);
+});
 
 app.get(
   "/:userId/watchlist",
@@ -202,7 +232,6 @@ app.get(
           res.send(e);
         });
     }
-    console.log(shows);
     res.render("watchlist", { shows });
   })
 );
@@ -211,7 +240,7 @@ app.post("/:userId/watchlist", isLoggedIn, async (req, res) => {
   const user = await User.findById(req.params.userId);
   const { movieId } = req.body;
   user.watchList.push({ imdbId: movieId });
-  user.save();
+  await user.save();
   req.flash("success", "WatchList Updated");
   res.redirect("/" + movieId);
 });
@@ -232,7 +261,6 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "SOMTHING WENT WRONg" } = err;
-  // console.log(err);
   res.status(status).render("error", { message });
 });
 
