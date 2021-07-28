@@ -17,6 +17,7 @@
     "express-session": "^1.17.2",
     "flash": "^1.1.0",
     "imdb-api": "^4.4.1",
+    "method-override": "^3.0.0",
     "mongoose": "^5.13.3",
     "nodemon": "^2.0.12",
     "omdbapi": "^3.0.0",

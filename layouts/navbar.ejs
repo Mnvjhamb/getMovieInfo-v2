@@ -24,12 +24,14 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#trendings"
-            >Trendings</a
+          <% if(currentUser){ %>
+          <a
+            class="nav-link active"
+            aria-current="page"
+            href="/<%= currentUser._id %>/watchlist"
+            >WatchList</a
           >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#shows">Shows</a>
+          <% } %>
         </li>
       </ul>
       <form class="d-flex mx-3" action="/search">

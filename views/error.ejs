@@ -1,4 +1,193 @@
 <%- include('../layouts/header') %> <%- include('../layouts/navbar') %>
+
+<style>
+  body {
+    background-color: rgb(33, 37, 41);
+    color: rgb(107, 98, 98);
+  }
+  .imgSize {
+    height: 100vh;
+    width: 100vw;
+  }
+  .scrollbarHide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .logo {
+    font-family: "Dancing Script", cursive;
+  }
+
+  #cont {
+    padding-left: 200px;
+    padding-right: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: space-evenly;
+    flex-wrap: wrap;
+  }
+  .searchedMovie {
+    /* font-size: 10px; */
+    margin: 70px;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 350px;
+    height: 350px;
+  }
+
+  .searchedMovie:hover img {
+    /* opacity: 0.3; */
+    transition: transform 0.2s ease;
+    transform: scale(1.05);
+  }
+  .movie {
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: space-around;  */
+    margin: 20px;
+    /* height: 500px; */
+  }
+  .movie:hover img {
+    /* opacity: 0.3; */
+    transition: transform 0.5s ease;
+    transform: scale(1.05);
+  }
+  .home .movie:hover img {
+    transform: scale(1);
+  }
+  .movie:hover .middle {
+    opacity: 1;
+  }
+
+  .details img {
+    height: 400px;
+    width: 400px;
+  }
+  .details h1 {
+    color: rgb(160, 77, 77);
+  }
+  .details {
+    background-color: rgb(33, 37, 41);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    width: 100%;
+    height: 100%;
+  }
+  .div {
+    width: 80vw;
+    margin: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    /* align-items: center; */
+  }
+
+  .detailsP {
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin-left: 50px;
+  }
+
+  Edit in JSFiddle Result HTML CSS Resources .footer-dark {
+    padding: 50px 0;
+    color: #f0f9ff;
+    background-color: #282d32;
+  }
+
+  .footer-dark h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .footer-dark ul {
+    padding: 0;
+    list-style: none;
+    line-height: 1.6;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+
+  .footer-dark ul a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .footer-dark ul a:hover {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 767px) {
+    .footer-dark .item:not(.social) {
+      text-align: center;
+      padding-bottom: 20px;
+    }
+  }
+
+  .footer-dark .item.text {
+    margin-bottom: 36px;
+  }
+
+  @media (max-width: 767px) {
+    .footer-dark .item.text {
+      margin-bottom: 0;
+    }
+  }
+
+  .footer-dark .item.text p {
+    opacity: 0.6;
+    margin-bottom: 0;
+  }
+
+  .footer-dark .item.social {
+    text-align: center;
+  }
+
+  @media (max-width: 991px) {
+    .footer-dark .item.social {
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+
+  .footer-dark .item.social > a {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+    margin: 0 8px;
+    color: #fff;
+    opacity: 0.75;
+  }
+
+  .footer-dark .item.social > a:hover {
+    opacity: 0.9;
+  }
+
+  .footer-dark .copyright {
+    text-align: center;
+    padding-top: 24px;
+    opacity: 0.3;
+    font-size: 13px;
+    margin-bottom: 0;
+  }
+</style>
 <div class="row m-3 mb-5">
   <div class="col-6 offset-3 mb-5">
     <div class="alert alert-danger mb-5" role="alert">

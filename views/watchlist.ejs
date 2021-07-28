@@ -1,12 +1,69 @@
-<%- include('../layouts/header') %> <%- include('../layouts/navbar') %>
+<%- include("../layouts/header") %> <%- include('../layouts/navbar') %>
+
 <style>
   body {
     background-color: rgb(33, 37, 41);
     color: rgb(107, 98, 98);
   }
+  .imgSize {
+    height: 100vh;
+    width: 100vw;
+  }
+  .scrollbarHide::-webkit-scrollbar {
+    display: none;
+  }
+
   .logo {
     font-family: "Dancing Script", cursive;
   }
+
+  #cont {
+    padding-left: 200px;
+    padding-right: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: space-evenly;
+    flex-wrap: wrap;
+  }
+  .searchedMovie {
+    /* font-size: 10px; */
+    margin: 70px;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 350px;
+    height: 350px;
+  }
+
+  .searchedMovie:hover img {
+    /* opacity: 0.3; */
+    transition: transform 0.2s ease;
+    transform: scale(1.05);
+  }
+  .movie {
+    /* background-color: aqua; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: space-around;  */
+    margin: 20px;
+    /* height: 500px; */
+  }
+  .movie:hover img {
+    /* opacity: 0.3; */
+    transition: transform 0.5s ease;
+    transform: scale(1.05);
+  }
+  .home .movie:hover img {
+    transform: scale(1);
+  }
+  .movie:hover .middle {
+    opacity: 1;
+  }
+
   .details img {
     height: 400px;
     width: 400px;
@@ -131,36 +188,28 @@
     margin-bottom: 0;
   }
 </style>
-<div class="container">
-  <div class="details">
-    <h1 class="display-1"><%= show.Title %></h1>
-    <div class="div">
-      <img src="<%= show.Poster %> " alt="" />
 
-      <div class="detailsP">
-        <%- show.Plot %>
-        <div style="color: #cb6ced">
-          Cast: <span style="color: rgb(107, 98, 98)"><%= show.Actors %></span
-          ><br />
-          Writer: <span style="color: rgb(107, 98, 98)"><%= show.Writer %></span
-          ><br />
-          Release Date:
-          <span style="color: rgb(107, 98, 98)"><%= show.Released %></span>
-          <br />
-          Genres:
-          <span style="color: rgb(107, 98, 98)"><%= show.Genre %></span> <br />
-          Language:
-          <span style="color: rgb(107, 98, 98)"><%= show.Language %></span>
-          <br />
-          Ratings:
-          <span style="color: rgb(107, 98, 98)"><%= show.imdbRating %></span>
-          <br />
-          Type: <span style="color: rgb(107, 98, 98)"><%= show.Type %></span>
-          <br />
-        </div>
-      </div>
+<div id="container">
+  <div id="cont">
+    <% if(!shows.length){ %>
+    <h1 style="margin-bottom: 5em; padding-top: 4em">WatchList is empty</h1>
+    <% } else {%> <% for(var show of shows){ %> <% if(show.data.Poster){ %>
+    <div class="searchedMovie">
+      <img
+        onclick="movieDetails(id)"
+        src="<%= show.data.Poster %>"
+        alt=""
+        id="<%=show.data.imdbID %>"
+        style="height: 300px; width: 300px"
+      />
+      <h4 class="name mt-3"><%= show.data.Title %></h4>
     </div>
+    <% } %> <% } %> <% } %>
   </div>
 </div>
-
-<%-include('../layouts/footer') %>
+<script>
+  function movieDetails(id) {
+    window.location.href = "/" + id;
+  }
+</script>
+<%- include("../layouts/footer") %>

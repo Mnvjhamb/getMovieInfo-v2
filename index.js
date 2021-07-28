@@ -6,10 +6,10 @@ const axios = require("axios");
 const { response } = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const methodOverride = require("method-override");
 const session = require("express-session");
 const localStrategy = require("passport-local");
 const flash = require("connect-flash");
-const movies = require("./utils/movies");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  watchList: [
+    {
+      imdbId: "String",
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -33,7 +38,7 @@ const User = mongoose.model("User", userSchema);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(methodOverride("_method"));
 app.use(
   session({
     secret: "Thisisasecret",
@@ -82,6 +87,15 @@ class ExpressError extends Error {
     this.status = status;
   }
 }
+
+const isLoggedIn = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    req.flash("error", "Please Login First");
+    res.redirect("/login");
+  }
+};
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -147,34 +161,70 @@ app.get(
   })
 );
 
-// app.get(
-//   "/:id",
-//   catchAsync(async (req, res, next) => {
-//     const { id } = req.params;
-//     try {
-//       const show = await axios.get(`http://api.tvmaze.com/episodes/${id}`);
-//       res.render("Show", { show: show.data });
-//     } catch (e) {
-//       next(e);
-//     }
-//   })
-// );
-
 app.get(
   "/:imdb",
   catchAsync(async (req, res) => {
     const { imdb } = req.params;
+    var notInWatchList = true;
+    if (req.user) {
+      for (var movie of req.user.watchList) {
+        if (movie.imdbId == imdb) {
+          notInWatchList = false;
+        }
+      }
+    }
+
     const show = await axios
       .get(`https://www.omdbapi.com/?i=${imdb}&apikey=70fc15e9`)
       .then((show) => {
         console.log(show.data);
-        res.render("searchedShow", { show: show.data });
+        res.render("show", { show: show.data, notInWatchList });
       })
       .catch((e) => {
         res.send(e);
       });
   })
 );
+
+app.get(
+  "/:userId/watchlist",
+  isLoggedIn,
+  catchAsync(async (req, res) => {
+    const movies = req.user.watchList;
+    const shows = [];
+    for (var movie of movies) {
+      var show = await axios
+        .get(`https://www.omdbapi.com/?i=${movie.imdbId}&apikey=70fc15e9`)
+        .then((show) => {
+          shows.push(show);
+        })
+        .catch((e) => {
+          res.send(e);
+        });
+    }
+    console.log(shows);
+    res.render("watchlist", { shows });
+  })
+);
+
+app.post("/:userId/watchlist", isLoggedIn, async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  const { movieId } = req.body;
+  user.watchList.push({ imdbId: movieId });
+  user.save();
+  req.flash("success", "WatchList Updated");
+  res.redirect("/" + movieId);
+});
+
+app.delete("/:userId/watchlist", isLoggedIn, async (req, res) => {
+  const { movieId } = req.body;
+  const user = await User.findByIdAndUpdate(req.params.userId, {
+    $pull: { watchList: { imdbId: movieId } },
+  });
+  user.save();
+  req.flash("success", "WatchList Updated");
+  res.redirect("/" + movieId);
+});
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page not found", 404));

@@ -25,7 +25,6 @@ Movies = [
   "It's a Wonderful Life",
   "Life Is Beautiful",
   "Léon: The Professional",
-  "Once Upon a Time in the West",
   "Interstellar",
   "Saving Private Ryan",
   "American History X",
@@ -246,6 +245,7 @@ Movies = [
   "Paris, Texas",
   "Akira",
 ];
+
 $(document).ready(func());
 function func() {
   images = document.getElementsByClassName("img");
