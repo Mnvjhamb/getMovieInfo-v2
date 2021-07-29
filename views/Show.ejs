@@ -132,7 +132,7 @@
   }
 
   .be-comment-block {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgb(33, 37, 41);
     margin-bottom: 50px !important;
     border: 1px solid #edeff2;
     border-radius: 2px;
@@ -141,8 +141,8 @@
   }
 
   .comments-title {
-    font-size: 16px;
-    color: #262626;
+    font-size: 30px;
+    color: white;
     margin-bottom: 15px;
     font-family: "Conv_helveticaneuecyr-bold";
   }
@@ -197,9 +197,9 @@
   .be-comment-text {
     font-size: 13px;
     line-height: 18px;
-    color: #7a8192;
+    color: #404655;
     display: block;
-    background: #f6f6f7;
+    background: rgb(175, 174, 174);
     border: 1px solid #edeff2;
     padding: 15px 20px 20px 20px;
   }
@@ -223,6 +223,7 @@
   }
 
   .form-group .form-input {
+    background-color: rgb(175, 174, 174);
     font-size: 13px;
     line-height: 50px;
     font-weight: 400;
@@ -308,7 +309,7 @@
   </div>
 
   <div class="be-comment-block">
-    <h1 class="comments-title">Comments (<%= reviews.length %> )</h1>
+    <h1 class="comments-title">Comments (<%= reviews.length %>)</h1>
     <% for(var review of reviews){ %>
     <div class="be-comment">
       <div class="be-img-comment">
@@ -318,7 +319,7 @@
       </div>
       <div class="be-comment-content">
         <span class="be-comment-name">
-          <a style="font-size: 2em; color: rgb(33, 37, 41)"
+          <a style="font-size: 2em; color: white"
             ><%= review.user.username %>
           </a>
         </span>
@@ -328,6 +329,7 @@
           <a
             href="<%= show.imdbID %>/review/<%= review._id %>/delete"
             class="btn btn-sm btn-danger"
+            style="color: rgb(175, 174, 174)"
             >Delete</a
           >
         </span>
@@ -337,7 +339,7 @@
     </div>
     <% } %>
 
-    <hr style="height: 3px" />
+    <hr style="height: 3px; background-color: white" />
     <form class="form-block" method="post" action="/<%= show.imdbID %>/review">
       <div class="row">
         <div class="col-xs-12">

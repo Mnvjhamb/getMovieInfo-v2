@@ -1,31 +1,71 @@
 <%- include('../layouts/header') %> <%- include('../layouts/navbar') %>
 
-<div style="margin-left: 30em; margin-top: 4em; margin-bottom: 7em">
-  <h1 class="display-3">Login</h1>
+<div class="container">
   <div class="row">
-    <div class="col-6 mt-3">
-      <form action="/login" method="POST">
-        <input
-          required
-          class="form-control"
-          type="text"
-          id="username"
-          name="username"
-          autocomplete="off"
-          placeholder="username"
-        />
-        <br />
-        <input
-          required
-          class="form-control"
-          type="password"
-          id="password"
-          name="password"
-          placeholder="password"
-        />
-        <br />
-        <button class="btn btn-primary">Login</button>
-      </form>
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card border-0 shadow rounded-3 my-5">
+        <div class="card-body p-4 p-sm-5">
+          <h5 class="card-title text-center mb-5 fw-light fs-5">Sign In</h5>
+          <form action="/login" method="POST">
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="floatingInput"
+                placeholder="username"
+                name="username"
+                required
+              />
+              <label for="floatingInput">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="password"
+                class="form-control"
+                id="floatingPassword"
+                placeholder="Password"
+                name="password"
+                required
+              />
+              <label for="floatingPassword">Password</label>
+            </div>
+
+            <div class="d-grid">
+              <button
+                class="btn btn-primary btn-login text-uppercase fw-bold"
+                type="submit"
+              >
+                Sign in
+              </button>
+            </div>
+            <hr class="my-4" />
+            <div class="d-grid mb-2">
+              <a
+                class="btn btn-google btn-login text-uppercase fw-bold"
+                href="/auth/google"
+              >
+                <i class="icon ion-social-google"></i> Sign in with Google
+              </a>
+            </div>
+            <div class="d-grid mb-2">
+              <a
+                class="btn btn-facebook btn-login text-uppercase fw-bold"
+                href="/auth/facebook"
+              >
+                <i class="icon ion-social-facebook"></i> Sign in with Facebook
+              </a>
+            </div>
+            <div class="d-grid">
+              <a
+                class="btn btn-github btn-login text-uppercase fw-bold"
+                href="/auth/github"
+              >
+                <i class="icon ion-social-github"></i> Sign in with Github
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>

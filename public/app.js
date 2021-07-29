@@ -251,7 +251,7 @@ function func() {
   movies = document.getElementsByClassName("movie");
   i = 0;
   getUrl = async () => {
-    id = Math.round(Math.random() * 243 + 1);
+    id = Math.round(Math.random() * Movies.length + 1);
     try {
       await axios
         .get(`https://www.omdbapi.com/?t=${Movies[id]}&apikey=70fc15e9`)

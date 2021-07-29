@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -5,12 +6,17 @@ const { urlencoded } = require("body-parser");
 const axios = require("axios");
 const { response } = require("express");
 const mongoose = require("mongoose");
-const passport = require("passport");
 const methodOverride = require("method-override");
-const session = require("express-session");
-const localStrategy = require("passport-local");
 const flash = require("connect-flash");
+
+const session = require("express-session");
+
+const passport = require("passport");
+const localStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
+const GitHubStrategy = require("passport-github").Strategy;
 
 const app = express();
 
@@ -30,6 +36,9 @@ const userSchema = new mongoose.Schema({
       imdbId: "String",
     },
   ],
+  googleId: String,
+  facebookId: String,
+  githubId: String,
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -78,6 +87,71 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/google/findYourMovie",
+      profileFields: ["id", "displayName", "emails"],
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      const user = await User.findOne({ googleId: profile.id });
+      if (!user) {
+        user = await new User({
+          email: profile._json.email,
+          username: profile.displayName,
+          googleId: profile.id,
+        }).save();
+      }
+      done(null, user);
+    }
+  )
+);
+
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/facebook/findYourMovie",
+      profileFields: ["id", "displayName", "emails"],
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      const user = await User.findOne({ facebookId: profile.id });
+      if (!user) {
+        user = await new User({
+          email: profile._json.email,
+          username: profile.displayName,
+          facebookId: profile.id,
+        }).save();
+      }
+      done(null, user);
+    }
+  )
+);
+
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/github/findYourMovie",
+    },
+    async function (accessToken, refreshToken, profile, done) {
+      const user = await User.findOne({ githubId: profile.id });
+      if (!user) {
+        user = await new User({
+          email: profile._json.email,
+          username: profile.displayName,
+          githubId: profile.id,
+        }).save();
+      }
+      done(null, user);
+    }
+  )
+);
+
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
@@ -111,6 +185,53 @@ const isLoggedIn = (req, res, next) => {
 app.get("/", (req, res) => {
   res.render("home");
 });
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+  })
+);
+
+app.get(
+  "/auth/google/findYourMovie",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    req.flash("success", "Successfully Logged in");
+    res.redirect("/");
+  }
+);
+
+app.get(
+  "/auth/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+
+app.get(
+  "/auth/facebook/findYourMovie",
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    req.flash("success", "Successfully Logged in");
+    res.redirect("/");
+  }
+);
+
+app.get("/auth/github", passport.authenticate("github"));
+
+app.get(
+  "/auth/github/findYourMovie",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    req.flash("success", "Successfully Logged in");
+    res.redirect("/");
+  }
+);
 
 app.get("/register", (req, res) => {
   res.render("register");
