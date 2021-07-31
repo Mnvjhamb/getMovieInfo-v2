@@ -5,15 +5,17 @@ const ejs = require("ejs");
 const { urlencoded } = require("body-parser");
 const axios = require("axios");
 const { response } = require("express");
-const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const flash = require("connect-flash");
 
 const session = require("express-session");
 
+const mongoose = require("mongoose");
+const User = require("./modals/user");
+const Review = require("./modals/review");
+
 const passport = require("passport");
 const localStrategy = require("passport-local");
-const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const GitHubStrategy = require("passport-github").Strategy;
@@ -24,36 +26,8 @@ mongoose.connect("mongodb://localhost:27017/findYourMovie", {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
-
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-  },
-  watchList: [
-    {
-      imdbId: "String",
-    },
-  ],
-  googleId: String,
-  facebookId: String,
-  githubId: String,
-});
-
-userSchema.plugin(passportLocalMongoose);
-const User = mongoose.model("User", userSchema);
-
-const reviewSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-  },
-  imdbId: String,
-  body: "String",
-});
-
-const Review = mongoose.model("Review", reviewSchema);
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -96,11 +70,12 @@ passport.use(
       profileFields: ["id", "displayName", "emails"],
     },
     async function (accessToken, refreshToken, profile, done) {
-      const user = await User.findOne({ googleId: profile.id });
+      var user = await User.findOne({ googleId: profile.id });
+      console.log(profile);
       if (!user) {
         user = await new User({
           email: profile._json.email,
-          username: profile.displayName,
+          username: profile.displayName + " " + profile.id,
           googleId: profile.id,
         }).save();
       }
@@ -118,11 +93,14 @@ passport.use(
       profileFields: ["id", "displayName", "emails"],
     },
     async function (accessToken, refreshToken, profile, done) {
-      const user = await User.findOne({ facebookId: profile.id });
+      var user = await User.findOne({ facebookId: profile.id });
+      console.log(profile);
+
       if (!user) {
         user = await new User({
           email: profile._json.email,
-          username: profile.displayName,
+          username: profile.displayName + " " + profile.id,
+
           facebookId: profile.id,
         }).save();
       }
@@ -139,11 +117,12 @@ passport.use(
       callbackURL: "http://localhost:3000/auth/github/findYourMovie",
     },
     async function (accessToken, refreshToken, profile, done) {
-      const user = await User.findOne({ githubId: profile.id });
+      var user = await User.findOne({ githubId: profile.id });
+
       if (!user) {
         user = await new User({
           email: profile._json.email,
-          username: profile.displayName,
+          username: profile.displayName + " " + profile.id,
           githubId: profile.id,
         }).save();
       }
