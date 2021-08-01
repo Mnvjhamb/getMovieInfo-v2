@@ -26,17 +26,29 @@
             >Home</a
           >
         </li>
-
         <li class="nav-item">
-          <% if(currentUser){ %>
+          <a class="nav-link active" aria-current="page" href="/genre/action"
+            >Action</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/genre/adventure"
+            >Adventure</a
+          >
+        </li>
+      </ul>
+      <ul class="navbar-nav mb-2 mb-lg-0" style="font-size: large">
+        <% if(currentUser){ %>
+        <li class="nav-item">
           <a
             class="nav-link active"
             aria-current="page"
             href="/<%= currentUser._id %>/watchlist"
             >WatchList</a
           >
-          <% } %>
         </li>
+
+        <% } %>
       </ul>
       <form class="d-flex mx-3" action="/search">
         <input

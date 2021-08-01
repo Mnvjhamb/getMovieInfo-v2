@@ -20,6 +20,9 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const GitHubStrategy = require("passport-github").Strategy;
 
+const actionMovies = require("./utils/action");
+const adventureMovies = require("./utils/adventure");
+
 const app = express();
 
 mongoose.connect("mongodb://localhost:27017/findYourMovie", {
@@ -271,6 +274,45 @@ app.get(
     }
   })
 );
+
+app.get("/genre/action", async (req, res) => {
+  var action = [];
+  for (var i = 0; i < 10; i++) {
+    var random = Math.floor(Math.random() * actionMovies.length);
+    action.push(actionMovies[random]);
+  }
+  const shows = [];
+  for (var movie of action) {
+    var show = await axios
+      .get(`https://www.omdbapi.com/?i=${movie}&apikey=70fc15e9`)
+      .then((show) => {
+        shows.push(show);
+      })
+      .catch((e) => {
+        res.send(e);
+      });
+  }
+  res.render("watchlist", { shows });
+});
+app.get("/genre/adventure", async (req, res) => {
+  var adventure = [];
+  for (var i = 0; i < 10; i++) {
+    var random = Math.floor(Math.random() * adventureMovies.length);
+    adventure.push(adventureMovies[random]);
+  }
+  const shows = [];
+  for (var movie of adventure) {
+    var show = await axios
+      .get(`https://www.omdbapi.com/?i=${movie}&apikey=70fc15e9`)
+      .then((show) => {
+        shows.push(show);
+      })
+      .catch((e) => {
+        res.send(e);
+      });
+  }
+  res.render("watchlist", { shows });
+});
 
 app.get(
   "/:imdb",
