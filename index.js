@@ -36,9 +36,10 @@ mongoose.connect(dbUrl, {
 const User = require("./modals/user");
 const Review = require("./modals/review");
 
-app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "/public")));
+app.set("views", path.join(process.cwd() + "/views"));
+app.use(express.static(path.join(process.cwd() + "/public")));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(
