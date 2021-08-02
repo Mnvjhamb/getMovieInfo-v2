@@ -27,7 +27,8 @@ const thrillerMovies = require("./utils/thriller");
 
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/findYourMovie", {
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/findYourMovie";
+mongoose.connect(dbUrl, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -140,7 +141,7 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.genre = "genre";
+  res.locals.genre = "Genre";
   next();
 });
 
@@ -447,6 +448,8 @@ app.use((err, req, res, next) => {
   res.status(status).render("error", { message });
 });
 
-app.listen("3000", () => {
-  console.log("server started at port 3000");
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`server started at port ${port}`);
 });
