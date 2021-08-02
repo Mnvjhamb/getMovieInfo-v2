@@ -7,7 +7,7 @@ const axios = require("axios");
 const { response } = require("express");
 const methodOverride = require("method-override");
 const flash = require("connect-flash");
-
+const path = require("path");
 const session = require("express-session");
 
 const mongoose = require("mongoose");
@@ -36,8 +36,9 @@ mongoose.connect(dbUrl, {
 const User = require("./modals/user");
 const Review = require("./modals/review");
 
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "/public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(
