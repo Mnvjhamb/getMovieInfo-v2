@@ -11,8 +11,6 @@ const flash = require("connect-flash");
 const session = require("express-session");
 
 const mongoose = require("mongoose");
-const User = require("./modals/user");
-const Review = require("./modals/review");
 
 const passport = require("passport");
 const localStrategy = require("passport-local");
@@ -34,6 +32,9 @@ mongoose.connect(dbUrl, {
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
+
+const User = require("./modals/user");
+const Review = require("./modals/review");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
