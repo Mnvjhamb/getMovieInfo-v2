@@ -22,6 +22,8 @@ const GitHubStrategy = require("passport-github").Strategy;
 
 const actionMovies = require("./utils/action");
 const adventureMovies = require("./utils/adventure");
+const comedyMovies = require("./utils/comedy");
+const thrillerMovies = require("./utils/thriller");
 
 const app = express();
 
@@ -138,6 +140,7 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.genre = "genre";
   next();
 });
 
@@ -292,7 +295,7 @@ app.get("/genre/action", async (req, res) => {
         res.send(e);
       });
   }
-  res.render("watchlist", { shows });
+  res.render("watchlist", { shows, genre: "Action" });
 });
 app.get("/genre/adventure", async (req, res) => {
   var adventure = [];
@@ -311,7 +314,45 @@ app.get("/genre/adventure", async (req, res) => {
         res.send(e);
       });
   }
-  res.render("watchlist", { shows });
+  res.render("watchlist", { shows, genre: "Adventure" });
+});
+app.get("/genre/comedy", async (req, res) => {
+  var comedy = [];
+  for (var i = 0; i < 10; i++) {
+    var random = Math.floor(Math.random() * comedyMovies.length);
+    comedy.push(comedyMovies[random]);
+  }
+  const shows = [];
+  for (var movie of comedy) {
+    var show = await axios
+      .get(`https://www.omdbapi.com/?i=${movie}&apikey=70fc15e9`)
+      .then((show) => {
+        shows.push(show);
+      })
+      .catch((e) => {
+        res.send(e);
+      });
+  }
+  res.render("watchlist", { shows, genre: "Comedy" });
+});
+app.get("/genre/thriller", async (req, res) => {
+  var thriller = [];
+  for (var i = 0; i < 10; i++) {
+    var random = Math.floor(Math.random() * thrillerMovies.length);
+    thriller.push(thrillerMovies[random]);
+  }
+  const shows = [];
+  for (var movie of thriller) {
+    var show = await axios
+      .get(`https://www.omdbapi.com/?i=${movie}&apikey=70fc15e9`)
+      .then((show) => {
+        shows.push(show);
+      })
+      .catch((e) => {
+        res.send(e);
+      });
+  }
+  res.render("watchlist", { shows, genre: "Thriller" });
 });
 
 app.get(

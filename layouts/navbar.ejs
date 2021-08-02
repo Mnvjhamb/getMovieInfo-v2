@@ -18,23 +18,25 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="font-size: large">
         <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
           <a
-            class="nav-link active"
-            aria-current="page"
-            href="/"
-            onclick="reload()"
-            >Home</a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
           >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/genre/action"
-            >Action</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/genre/adventure"
-            >Adventure</a
-          >
+            <%= genre %>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="/genre/action">Action</a>
+            <a class="dropdown-item" href="/genre/adventure">Adventure</a>
+            <a class="dropdown-item" href="/genre/comedy">Comedy</a>
+            <a class="dropdown-item" href="/genre/thriller">Thriller</a>
+          </div>
         </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0" style="font-size: large">
