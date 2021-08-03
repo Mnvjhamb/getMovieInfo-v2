@@ -75,7 +75,9 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/findYourMovie",
+      callbackURL:
+        "https://evening-ocean-62764.herokuapp.com/auth/google/findYourMovie",
+      // "http://localhost:3000/auth/google/findYourMovie",
       profileFields: ["id", "displayName", "emails"],
     },
     async function (accessToken, refreshToken, profile, done) {
@@ -98,7 +100,9 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/facebook/findYourMovie",
+      callbackURL:
+        "https://evening-ocean-62764.herokuapp.com/auth/facebook/findYourMovie",
+      // "http://localhost:3000/auth/facebook/findYourMovie",
       profileFields: ["id", "displayName", "emails"],
     },
     async function (accessToken, refreshToken, profile, done) {
@@ -123,7 +127,9 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/github/findYourMovie",
+      callbackURL:
+        "https://evening-ocean-62764.herokuapp.com/auth/github/findYourMovie",
+      // "http://localhost:3000/auth/github/findYourMovie",
     },
     async function (accessToken, refreshToken, profile, done) {
       var user = await User.findOne({ githubId: profile.id });
