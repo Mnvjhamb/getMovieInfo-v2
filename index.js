@@ -177,6 +177,16 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
+const isauthorized = async (req, res, next) => {
+  const user = await User.findById(req.params.userId);
+  if (user._id === req.user._id) {
+    next();
+  } else {
+    req.flash("error", "Not Authorized");
+    res.redirect("/");
+  }
+};
+
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -411,6 +421,7 @@ app.get("/:imdbId/review/:reviewId/delete", isLoggedIn, async (req, res) => {
 
 app.get(
   "/:userId/watchlist",
+  isauthorized,
   isLoggedIn,
   catchAsync(async (req, res) => {
     const movies = req.user.watchList;
