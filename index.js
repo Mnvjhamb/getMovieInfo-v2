@@ -179,7 +179,7 @@ const isLoggedIn = (req, res, next) => {
 
 const isauthorized = async (req, res, next) => {
   const user = await User.findById(req.params.userId);
-  if (user._id === req.user._id) {
+  if (user._id.equals(req.user._id)) {
     next();
   } else {
     req.flash("error", "Not Authorized");
