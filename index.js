@@ -36,8 +36,8 @@ mongoose.connect(dbUrl, {
 const User = require("./modals/user");
 const Review = require("./modals/review");
 
-app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd() + "/views"));
+app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd() + "/public")));
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -376,7 +376,7 @@ app.get(
     const show = await axios
       .get(`https://www.omdbapi.com/?i=${imdb}&apikey=70fc15e9`)
       .then((show) => {
-        res.render("show", { show: show.data, notInWatchList, reviews });
+        res.render("details", { show: show.data, notInWatchList, reviews });
       })
       .catch((e) => {
         res.send(e);
