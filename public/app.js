@@ -183,7 +183,6 @@ Movies = [
   "Ben-Hur",
   "The Grapes of Wrath",
   "Hachi: A Dog's Tale",
-  "Nausicaä of the Valley of the Wind",
   "Shutter Island",
   "Diabolique",
   "Sin City",
@@ -255,10 +254,12 @@ function func() {
     try {
       await axios
         .get(`https://www.omdbapi.com/?t=${Movies[id]}&apikey=70fc15e9`)
-        .then((data) => {
+        .then(async (data) => {
+          if (data.data.Response === "False" || !data.data.Poster) {
+            return await getUrl();
+          }
           images[i].src = data.data.Poster;
           images[i].id = data.data.imdbID;
-
           var name = document.createElement("h4");
           name.innerHTML = data.data.Title;
           name.style.color = "rgb(147 155 157)";
@@ -266,7 +267,7 @@ function func() {
           movies[i].appendChild(name);
         })
         .catch(async (e) => {
-          console.log(e);
+          console.log(e + "ERROR" + id);
           await getUrl();
         });
     } catch (e) {

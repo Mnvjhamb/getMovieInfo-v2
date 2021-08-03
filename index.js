@@ -111,7 +111,7 @@ passport.use(
 
       if (!user) {
         user = await new User({
-          email: profile._json.email,
+          email: profile._json.email || null,
           username: profile.displayName + " " + profile.id,
 
           facebookId: profile.id,
