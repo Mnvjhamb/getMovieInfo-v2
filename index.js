@@ -25,7 +25,7 @@ const thrillerMovies = require("./utils/thriller");
 
 const app = express();
 
-const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/findYourMovie";
+const dbUrl = process.env.DB_URL;
 mongoose.connect(dbUrl, {
   useCreateIndex: true,
   useNewUrlParser: true,
@@ -35,7 +35,7 @@ mongoose.connect(dbUrl, {
 
 const User = require("./modals/user");
 const Review = require("./modals/review");
-
+ 
 app.set("views", path.join(process.cwd() + "/views"));
 app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd() + "/public")));
@@ -76,8 +76,8 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL:
-        "https://evening-ocean-62764.herokuapp.com/auth/google/findYourMovie",
-      // "http://localhost:3000/auth/google/findYourMovie",
+        // "https://evening-ocean-62764.herokuapp.com/auth/google/findYourMovie",
+      "http://localhost:3000/auth/google/findYourMovie",
       profileFields: ["id", "displayName", "emails"],
     },
     async function (accessToken, refreshToken, profile, done) {
@@ -95,32 +95,7 @@ passport.use(
   )
 );
 
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL:
-        "https://evening-ocean-62764.herokuapp.com/auth/facebook/findYourMovie",
-      // "http://localhost:3000/auth/facebook/findYourMovie",
-      profileFields: ["id", "displayName", "emails"],
-    },
-    async function (accessToken, refreshToken, profile, done) {
-      var user = await User.findOne({ facebookId: profile.id });
-      console.log(profile);
 
-      if (!user) {
-        user = await new User({
-          email: profile._json.email || null,
-          username: profile.displayName + " " + profile.id,
-
-          facebookId: profile.id,
-        }).save();
-      }
-      done(null, user);
-    }
-  )
-);
 
 passport.use(
   new GitHubStrategy(
@@ -128,8 +103,8 @@ passport.use(
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL:
-        "https://evening-ocean-62764.herokuapp.com/auth/github/findYourMovie",
-      // "http://localhost:3000/auth/github/findYourMovie",
+        // "https://evening-ocean-62764.herokuapp.com/auth/github/findYourMovie",
+      "http://localhost:3000/auth/github/findYourMovie",
     },
     async function (accessToken, refreshToken, profile, done) {
       var user = await User.findOne({ githubId: profile.id });
@@ -298,6 +273,11 @@ app.get(
   })
 );
 
+app.get('/users', async(req, res)=>{
+  const users = await User.find();
+  res.send(users);
+})
+
 app.get("/genre/action", async (req, res) => {
   var action = [];
   for (var i = 0; i < 10; i++) {
@@ -439,6 +419,8 @@ app.get(
     res.render("watchlist", { shows });
   })
 );
+
+
 
 app.post("/:userId/watchlist", isLoggedIn, async (req, res) => {
   const user = await User.findById(req.params.userId);
